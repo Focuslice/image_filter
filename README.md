@@ -5,7 +5,11 @@
 ## 사용방법
 ```bash
 git clone https://github.com/streetlamplee/image_filter.git
+# git 서브모듈까지 업데이트
 git submodule update --init --recursive
+
+docker build -t {image 이름} .
+docker run -d -p 8000:8000 --name {컨테이너 이름} {이미지 이름}
 ```
 
 ## 아키텍처
