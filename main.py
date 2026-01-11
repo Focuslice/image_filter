@@ -1,22 +1,16 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
-from transformers import pipeline
 from PIL import Image
 import io
+from nsfw_filter import Nsfw_filter
 
-app = FastAPI(title="NSFW Image Filter API")
+nsfw_filter = Nsfw_filter()
+nsfw_filter.load_model()
 
-# 1. 모델 로드 (서버 시작 시 한 번만 로드하여 메모리에 상주)
-# 'falconsai/nsfw_image_detection'은 Hugging Face에서 인기 있는 모델 중 하나입니다.
-# 폭력성 등 더 다양한 카테고리가 필요하면 다른 모델로 교체 가능합니다.
-try:
-    classifier = pipeline("image-classification", model="Falconsai/nsfw_image_detection")
-except Exception as e:
-    print(f"모델 로드 실패: {e}")
-    classifier = None
+app = FastAPI(title="image Image Filter API")
 
 @app.post("/check-image")
 async def check_image(file: UploadFile = File(...)):
-    if not classifier:
+    if not nsfw_filter.classifier:
         raise HTTPException(status_code=500, detail="Model not loaded")
 
     # 2. 이미지 유효성 검사 및 로드
@@ -31,7 +25,7 @@ async def check_image(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Invalid image file.")
 
     # 3. 모델 추론 (Inference)
-    results = classifier(image)
+    results = nsfw_filter.predict_image(image)
     
     # 4. 결과 파싱 (NSFW 확률 계산)
     # 결과 예시: [{'label': 'nsfw', 'score': 0.98}, {'label': 'normal', 'score': 0.02}]
