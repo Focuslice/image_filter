@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from PIL import Image
 import io
-from nsfw_filter import Nsfw_filter
+from nsfw_filter.nsfw_filter import Nsfw_filter
 
 nsfw_filter = Nsfw_filter()
 nsfw_filter.load_model()
