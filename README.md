@@ -1,3 +1,14 @@
+# Image_filter
+## 설명
+이미지의 선정성, 폭력성, 혐오성 컨텐츠가 존재하는지 필터링하는 api입니다.
+
+## 사용방법
+```bash
+git clone https://github.com/streetlamplee/image_filter.git
+git submodule update --init --recursive
+```
+
+## 아키텍처
 ```mermaid
 sequenceDiagram
     participant User as Client (User)
@@ -27,22 +38,3 @@ sequenceDiagram
     end
     deactivate API
 ```
-```mermaid
-graph TD
-    subgraph Host["Host Machine"]
-        Client[Client / Request]
-        
-        subgraph Docker["Container (nsfw-filter-app)"]
-            FastAPI[FastAPI App]
-            Uvicorn[Uvicorn Server]
-            Logic[Inference Logic]
-        end
-        
-        Volume[("Docker Volume<br/>(Model Cache)")]
-    end
-
-    Client -->|HTTP POST| Uvicorn
-    Uvicorn --> FastAPI
-    FastAPI --> Logic
-    Logic <-->|Load Model| Volume
-    ```
