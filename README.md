@@ -4,7 +4,7 @@
 
 ## 사용방법
 ```bash
-git clone https://github.com/streetlamplee/image_filter.git
+git clone https://github.com/Focuslice/image_filter.git
 # git 서브모듈까지 업데이트
 git submodule update --init --recursive
 
