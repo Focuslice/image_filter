@@ -1,3 +1,7 @@
 [submodule "nsfw_filter"]
 	path = nsfw_filter
 	url = https://github.com/streetlamplee/nsfw_filter.git
+
+[submodule "violence_filter"]
+	path = violence_filter
+	url = https://github.com/streetlamplee/violence_filter.git
