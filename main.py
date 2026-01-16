@@ -2,9 +2,12 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from PIL import Image
 import io
 from nsfw_filter.nsfw_filter import Nsfw_filter
+from violence_filter.violence_filter import violence_filter 
 
 nsfw_filter = Nsfw_filter()
 nsfw_filter.load_model()
+violence_filter = violence_filter()
+violence_filter.load_model()
 
 app = FastAPI(title="image Image Filter API")
 
@@ -25,25 +28,37 @@ async def check_image(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Invalid image file.")
 
     # 3. 모델 추론 (Inference)
-    results = nsfw_filter.predict_image(image)
+    nsfw_results = nsfw_filter.predict_image(image)
+    violence_results = violence_filter.predict_image(image)
+
     
     # 4. 결과 파싱 (NSFW 확률 계산)
     # 결과 예시: [{'label': 'nsfw', 'score': 0.98}, {'label': 'normal', 'score': 0.02}]
     nsfw_score = 0.0
-    for result in results:
+    for result in nsfw_results:
         if result['label'] == 'nsfw':
             nsfw_score = result['score']
+            break
+
+    violence_score = 0.0
+    for result in violence_results:
+        if result['label'] == 'violence':
+            violence_score = result['score']
             break
             
     # 5. 정책 결정 (임계값 설정)
     # 0.8(80%) 이상이면 차단 등으로 설정
-    is_unsafe = nsfw_score > 0.8
+    is_unsafe = nsfw_score > 0.8 or violence_score > 0.8
     
     return {
         "filename": file.filename,
         "is_unsafe": is_unsafe,
         "nsfw_score": round(nsfw_score, 4),
-        "detail": results
+        "vilolence_score": round(violence_score, 4),  # Placeholder for violence score
+        "detail": {result 
+                   for result in nsfw_results +
+                                 violence_results
+                  }
     }
 
 # 실행 명령: uvicorn main:app --reload
