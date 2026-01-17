@@ -55,10 +55,8 @@ async def check_image(file: UploadFile = File(...)):
         "is_unsafe": is_unsafe,
         "nsfw_score": round(nsfw_score, 4),
         "vilolence_score": round(violence_score, 4),  # Placeholder for violence score
-        "detail": {result 
-                   for result in nsfw_results +
-                                 violence_results
-                  }
+        "detail":  nsfw_results + violence_results
+                  
     }
 
 # 실행 명령: uvicorn main:app --reload
